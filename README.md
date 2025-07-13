@@ -120,8 +120,70 @@ Attach the following IAM permissions to your Lambda execution role:
         'body': json.dumps(f'Total EC2 Instances (Running & Stopped): {total}')
     }
 
+Explaination about the lambda code 
 
+This AWS Lambda function provides a centralized summary of EC2 instances across all AWS regions. It scans for EC2 instances that are in either a running or stopped state and extracts key details, including:
+  - AWS Region where the instance resides
+  - Instance State (e.g., running, stopped)
+  - Instance Type (e.g., t2.micro, m5.large)
+  - Cross-region visibility into all EC2 instances in your AWS account
+  - A lightweight inventory report directly sent to your Slack channel
+  - A fast way to identify resource usage, idle instances, or regional distribution
+  - An easy integration point for daily monitoring via scheduled triggers (e.g., EventBridge)
 
+### 4.  AWS EventBridge Scheduler Setup to Trigger Lambda
 
+##  Create an IAM Role for EventBridge Scheduler
 
+Create an IAM role that allows EventBridge Scheduler to invoke the target Lambda function.
+
+### Trust Policy (Assume Role)
+```json
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Principal": {
+        "Service": "scheduler.amazonaws.com"
+      },
+      "Action": "sts:AssumeRole"
+    }
+  ]
+}
+```
+Permissions Policy (Attach to Role)
+```json
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Action": "lambda:InvokeFunction",
+      "Resource": "arn:aws:lambda:<region>:<account-id>:function:<lambda-function-name>"
+    }
+  ]
+}
+```
+Step 2: Create a Rule in EventBridge Scheduler (Console or CLI)
+Option A: Using AWS Console
+1.Open Amazon EventBridge in the AWS Console.
+2.Go to Scheduler > Create schedule.
+3.Enter a Name for the schedule (e.g., daily-lambda-trigger).
+4.Choose Frequency: Select Cron-based schedule.
+5.Set your Cron expression (e.g., cron(0 3 * * ? *) for 3 AM daily).
+6.In the Target section:
+    Choose Lambda function.
+    Target Lambda.
+    Assign the IAM role created in Step 1 as the Execution role.
+
+Option B: Using AWS CLI
+```json
+aws scheduler create-schedule \
+  --name daily-lambda-trigger \
+  --schedule-expression "cron(0 3 * * ? *)" \
+  --flexible-time-window "Mode=OFF" \
+  --target "Arn=arn:aws:lambda:<region>:<account-id>:function:<lambda-function-name>,RoleArn=arn:aws:iam::<account-id>:role/<scheduler-role-name>" \
+  --description "Trigger Lambda daily at 3 AM"
+```
 
