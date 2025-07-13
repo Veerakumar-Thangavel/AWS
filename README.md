@@ -167,6 +167,7 @@ Permissions Policy (Attach to Role)
 ```
 Step 2: Create a Rule in EventBridge Scheduler 
 
+Using AWS Console
 1.Open Amazon EventBridge in the AWS Console.
 2.Go to Scheduler > Create schedule.
 3.Enter a Name for the schedule (e.g., daily-lambda-trigger).
