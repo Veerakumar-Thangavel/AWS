@@ -185,5 +185,6 @@ aws scheduler create-schedule \
   --flexible-time-window "Mode=OFF" \
   --target "Arn=arn:aws:lambda:<region>:<account-id>:function:<lambda-function-name>,RoleArn=arn:aws:iam::<account-id>:role/<scheduler-role-name>" \
   --description "Trigger Lambda daily at 3 AM"
+
 ```
 
