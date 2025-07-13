@@ -1,56 +1,59 @@
-# AWS
-AWS Services 
+# 🖥️ AWS Lambda: EC2 Instance Summary to Slack
 
-# 🖥️ AWS Lambda: EC2 Instance Inventory & Pricing Notification to Slack
-
-This Lambda function retrieves **all running and stopped EC2 instances** across multiple AWS regions, collects detailed metadata including hourly cost (using the AWS Pricing API), and sends a summarized report to a specified **Slack channel** using an incoming webhook.
+This AWS Lambda function scans multiple AWS regions to list all EC2 instances in `running` or `stopped` state. It then sends a formatted summary to a Slack channel via a Slack webhook.
 
 ---
 
 ## 📌 Features
 
-- Lists EC2 instances across all supported AWS regions
-- Includes metadata: Name, Instance ID, Type, State, IP Address, Key Pair, AMI Description, Storage Size, Launch Time
-- Calculates **Hourly Cost** using AWS Pricing API
-- Sends a structured message to Slack
-- Skips terminated instances
-- Resilient error handling
+- Lists EC2 instance details across multiple regions
+- Filters instances by `running` and `stopped` states
+- Reports the following per instance:
+  - AWS Region
+  - Instance State
+  - Instance Type
+- Sends a neat summary to Slack
+- Easily schedulable with Amazon EventBridge (Cron)
 
 ---
 
-## 🔧 Environment Variables
+## 🚀 Setup Instructions
 
-| Name               | Description                          |
-|--------------------|--------------------------------------|
-| `SLACK_WEBHOOK_URL`| Slack Incoming Webhook URL for alerting |
+### 1. Deploy the Lambda Function
 
----
+Use the AWS Lambda Console or AWS CLI to create the function.
 
-## 🛠️ Setup Instructions
+### 2. Set Environment Variable
 
-### 1. 📦 Create IAM Role for Lambda
-Attach the following permissions:
+In your Lambda configuration, add the following environment variable:
+
+| Key               | Value                    |
+|------------------|--------------------------|
+| `SLACK_WEBHOOK_URL` | Paste the your Slack Webhook URL channel |
+
+> 💡 You can create a Slack webhook [here](https://api.slack.com/messaging/webhooks).
+
+### 3. IAM Role Permissions
+
+Attach the following IAM permissions to your Lambda execution role:
+
 ```json
 {
-	"Version": "2012-10-17",
-	"Statement": [
-		{
-			"Sid": "AllowEC2Describe",
-			"Effect": "Allow",
-			"Action": [
-				"ec2:DescribeInstances",
-				"ec2:DescribeVolumes",
-				"ec2:DescribeImages"
-			],
-			"Resource": "*"
-		},
-		{
-			"Sid": "AllowPricingAPIAccess",
-			"Effect": "Allow",
-			"Action": [
-				"pricing:GetProducts"
-			],
-			"Resource": "*"
-		}
-	]
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "AllowEC2Describe",
+      "Effect": "Allow",
+      "Action": [
+        "ec2:DescribeInstances"
+      ],
+      "Resource": "*"
+    }
+  ]
 }
+
+### 4. Lambda Code 
+
+
+
+
