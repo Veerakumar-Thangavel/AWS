@@ -1,2 +1,48 @@
 # AWS
 AWS Services 
+
+# 🖥️ AWS Lambda: EC2 Instance Inventory & Pricing Notification to Slack
+
+This Lambda function retrieves **all running and stopped EC2 instances** across multiple AWS regions, collects detailed metadata including hourly cost (using the AWS Pricing API), and sends a summarized report to a specified **Slack channel** using an incoming webhook.
+
+---
+
+## 📌 Features
+
+- Lists EC2 instances across all supported AWS regions
+- Includes metadata: Name, Instance ID, Type, State, IP Address, Key Pair, AMI Description, Storage Size, Launch Time
+- Calculates **Hourly Cost** using AWS Pricing API
+- Sends a structured message to Slack
+- Skips terminated instances
+- Resilient error handling
+
+---
+
+## 🔧 Environment Variables
+
+| Name               | Description                          |
+|--------------------|--------------------------------------|
+| `SLACK_WEBHOOK_URL`| Slack Incoming Webhook URL for alerting |
+
+---
+
+## 🛠️ Setup Instructions
+
+### 1. 📦 Create IAM Role for Lambda
+Attach the following permissions:
+```json
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Action": [
+        "ec2:DescribeInstances",
+        "ec2:DescribeVolumes",
+        "ec2:DescribeImages",
+        "pricing:GetProducts"
+      ],
+      "Resource": "*"
+    }
+  ]
+}
