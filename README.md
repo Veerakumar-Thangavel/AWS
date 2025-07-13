@@ -178,7 +178,9 @@ Option A: Using AWS Console
     Assign the IAM role created in Step 1 as the Execution role.
 
 Option B: Using AWS CLI
+
 ```json
+
 aws scheduler create-schedule \
   --name daily-lambda-trigger \
   --schedule-expression "cron(0 3 * * ? *)" \
