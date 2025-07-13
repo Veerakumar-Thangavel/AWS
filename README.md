@@ -53,7 +53,7 @@ Attach the following IAM permissions to your Lambda execution role:
 }
 ```
 ### 4. AWS Lambd Code 
-```json
+
     import os
     import json
     import boto3
@@ -120,7 +120,6 @@ Attach the following IAM permissions to your Lambda execution role:
         'body': json.dumps(f'Total EC2 Instances (Running & Stopped): {total}')
     }
 
-```
 
 
 
