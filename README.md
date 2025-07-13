@@ -167,13 +167,12 @@ Permissions Policy (Attach to Role)
 ```
 Step 2: Create a Rule in EventBridge Scheduler 
 
-Using AWS Console
-1.Open Amazon EventBridge in the AWS Console.
-2.Go to Scheduler > Create schedule.
-3.Enter a Name for the schedule (e.g., daily-lambda-trigger).
-4.Choose Frequency: Select Cron-based schedule.
-5.Set your Cron expression (e.g., cron(0 3 * * ? *) for 3 AM daily).
-6.In the Target section:
+- Open Amazon EventBridge in the AWS Console.
+- Go to Scheduler > Create schedule.
+- Enter a Name for the schedule (e.g., daily-lambda-trigger).
+- Choose Frequency: Select Cron-based schedule.
+- Set your Cron expression (e.g., cron(0 3 * * ? *) for 3 AM daily).
+- In the Target section:
     Choose Lambda function.
     Target Lambda.
     Assign the IAM role created in Step 1 as the Execution role.
