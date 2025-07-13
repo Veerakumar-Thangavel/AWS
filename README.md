@@ -32,17 +32,25 @@ This Lambda function retrieves **all running and stopped EC2 instances** across 
 Attach the following permissions:
 ```json
 {
-  "Version": "2012-10-17",
-  "Statement": [
-    {
-      "Effect": "Allow",
-      "Action": [
-        "ec2:DescribeInstances",
-        "ec2:DescribeVolumes",
-        "ec2:DescribeImages",
-        "pricing:GetProducts"
-      ],
-      "Resource": "*"
-    }
-  ]
+	"Version": "2012-10-17",
+	"Statement": [
+		{
+			"Sid": "AllowEC2Describe",
+			"Effect": "Allow",
+			"Action": [
+				"ec2:DescribeInstances",
+				"ec2:DescribeVolumes",
+				"ec2:DescribeImages"
+			],
+			"Resource": "*"
+		},
+		{
+			"Sid": "AllowPricingAPIAccess",
+			"Effect": "Allow",
+			"Action": [
+				"pricing:GetProducts"
+			],
+			"Resource": "*"
+		}
+	]
 }
