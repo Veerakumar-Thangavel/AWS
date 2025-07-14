@@ -4,7 +4,7 @@ This AWS Lambda function scans multiple AWS regions to list all EC2 instances in
 
 ---
 Architecture Diagram
-![Uploading image.png…]()
+<img width="710" height="661" alt="AWS-lambda png" src="https://github.com/user-attachments/assets/0b72fd6f-a354-45c4-ba51-7bef8417d918" />
 
 ## 📌 Features
 
