@@ -180,6 +180,22 @@ Create a Rule in EventBridge Scheduler
     Target Lambda.
     Assign the IAM role created in Step 1 as the Execution role.
 
+### Final OutPut will be recived through Slack
+Slack Meaasage Output 
+```json
+EC2 Summary: Region, State & Type
+• Region: `us-east-1` | State: `running` | Type: `t3.micro`
+• Region: `us-east-1` | State: `stopped` | Type: `t2.medium`
+• Region: `eu-west-1` | State: `running` | Type: `m5.large`
+• Region: `ap-south-1` - Error: Auth failure or region not enabled
+```
+Lambda function console Output 
+```json
+{
+  "statusCode": 200,
+  "body": "\"Total EC2 Instances (Running & Stopped): 12\""
+}
+```
 
 
 
