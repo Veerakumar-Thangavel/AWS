@@ -1,4 +1,4 @@
-# 🖥️ AWS Lambda: EC2 Instance Summary to Slack
+# 🖥️ AWS Lambda: EC2 Instance Summary to Slack Notification
 
 This AWS Lambda function scans multiple AWS regions to list all EC2 instances in `running` or `stopped` state. It then sends a formatted summary to a Slack channel via a Slack webhook.
 
