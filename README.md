@@ -131,7 +131,7 @@ This AWS Lambda function provides a centralized summary of EC2 instances across 
   - A fast way to identify resource usage, idle instances, or regional distribution
   - An easy integration point for daily monitoring via scheduled triggers (e.g., EventBridge)
 
-### 4.  AWS EventBridge Scheduler Setup to Trigger Lambda
+### 5.  AWS EventBridge Scheduler Setup to Trigger Lambda
 
 ##  Create an IAM Role for EventBridge Scheduler
 
@@ -165,7 +165,7 @@ Permissions Policy (Attach to Role)
   ]
 }
 ```
-Step 2: Create a Rule in EventBridge Scheduler 
+Create a Rule in EventBridge Scheduler 
 
 - Open Amazon EventBridge in the AWS Console.
 - Go to Scheduler > Create schedule.
