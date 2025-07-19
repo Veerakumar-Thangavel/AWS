@@ -1,26 +1,30 @@
-# 🔄 AWS Lambda - EC2 Start/Stop Automation with Slack Notification
+# 🔄 EC2 Instance Scheduler with Slack Notifications
 
-This AWS Lambda function automatically **starts or stops EC2 instances** across multiple regions based on time and sends a **detailed summary to Slack**.
+This AWS Lambda function **automates EC2 instance start/stop** operations across all AWS regions, sends a **detailed summary to Slack**, and is **scheduled via Amazon EventBridge** based on a specified timezone.
 
 It also functions as a lightweight **EC2 inventory tool**, listing instance states and types across all regions.
 
 ---
 <img width="710" height="661" alt="AWS-lambda png" src="https://github.com/user-attachments/assets/0b72fd6f-a354-45c4-ba51-7bef8417d918" />
 
-## 📌 Features
+## 📦 Features
 
-- 🕒 Automatically **starts EC2 instances at a scheduled hour**
-- 📴 Automatically **stops EC2 instances at another scheduled hour**
-- 🌍 Scans **18 AWS regions**
-- 📋 Collects per-instance:
-  - AWS Region
-  - Instance ID
-  - Instance State
-  - Instance Type
-- 🔔 Sends **Slack notifications** with summaries and actions taken
-- ⏰ Can be scheduled using **Amazon EventBridge (cron)**
-
+- 🔍 Lists all EC2 instances in **all AWS regions**
+- 🚀 Starts or 🔻 stops instances based on current state and action
+- 🕒 Uses **Asia/Kolkata** (IST) timezone for scheduling and reporting
+- 📣 Sends formatted Slack summary with:
+  - Region, Instance ID, State, Type
+  - ✅ Started Instances
+  - 🔻 Stopped Instances
+  - 📊 Total instance count
 ---
+
+## 🧠 How It Works
+
+- You set `ACTION=start` or `ACTION=stop` as an environment variable.
+- The function runs based on an **EventBridge cron schedule**.
+- EC2 instances are started or stopped based on their current state.
+- A **Slack message** is sent summarizing the operation.
 
 ## 🚀 Setup Instructions
 
@@ -30,17 +34,24 @@ Create a new Lambda function using **Python 3.x** runtime.
 
 ---
 
-### 2. Set Environment Variables
+## 🛠️ Environment Variables
 
-Set the following environment variables in the Lambda configuration:
+| Variable        | Value            | Description                         |
+|----------------|------------------|-------------------------------------|
+| `ACTION`        | `start` or `stop`| What action to perform              |
+| `SLACK_WEBHOOK` | `<Webhook URL>`  | Slack Incoming Webhook URL          |
 
-| Key                | Value                                |
-|-------------------|----------------------------------------|
-| `SLACK_WEBHOOK_URL` | Your Slack Incoming Webhook URL         |
-| `TIMEZONE`         | (Optional) e.g., `Asia/Kolkata`         |
-| `START_HOUR`       | (Optional) e.g., `9` (24-hr format)     |
-| `STOP_HOUR`        | (Optional) e.g., `19` (24-hr format)    |
+## ⏰ Scheduling with EventBridge (Asia/Kolkata)
 
+Example cron schedule to run every day at 9 AM IST (UTC+5:30):
+
+```cron
+cron(30 3 * * ? *)  # 9:00 AM IST = 3:30 AM UTC
+```
+To stop at 7 PM IST:
+```cron
+cron(30 13 * * ? *)  # 7:00 PM IST = 1:30 PM UTC
+```
 ---
 
 ### 3. IAM Permissions for Lambda
@@ -85,11 +96,7 @@ def send_slack_message(slack_webhook_url, slack_message):
         body=encoded_data,
         headers={'Content-Type': 'application/json'}
     )
-    print('>send_slack_message:response status code:', response.status)
-
-def get_current_hour(timezone_str):
-    tz = pytz.timezone(timezone_str)
-    return datetime.now(tz).hour
+    print(f"> Slack response: {response.status}")
 
 def manage_ec2_instances(action, region, instance_ids):
     ec2 = boto3.client('ec2', region_name=region)
@@ -99,29 +106,15 @@ def manage_ec2_instances(action, region, instance_ids):
         ec2.stop_instances(InstanceIds=instance_ids)
 
 def find_and_manage_instances():
-    ec2_regions = [
-        'us-east-1', 'us-east-2', 'us-west-1', 'us-west-2',
-        'ap-south-1', 'ap-northeast-1', 'ap-northeast-2', 'ap-northeast-3',
-        'ap-southeast-1', 'ap-southeast-2', 'ca-central-1',
-        'eu-central-1', 'eu-west-1', 'eu-west-2', 'eu-west-3',
-        'eu-north-1', 'sa-east-1'
-    ]
+    action = os.getenv("ACTION", "stop").lower()
+    slack_webhook_url = os.getenv("SLACK_WEBHOOK")
 
-    slack_webhook_url = os.environ['SLACK_WEBHOOK_URL']
-    timezone = os.environ.get('TIMEZONE', 'Asia/Kolkata')
-    start_hour = int(os.environ.get('START_HOUR', '9'))
-    stop_hour = int(os.environ.get('STOP_HOUR', '19'))
-
-    current_hour = get_current_hour(timezone)
-    slack_message = f"*EC2 Automation Summary - Hour {current_hour} ({timezone})*\n"
-    action = None
-
-    if current_hour == start_hour:
-        action = 'start'
-    elif current_hour == stop_hour:
-        action = 'stop'
-
+    ec2_regions = [r['RegionName'] for r in boto3.client('ec2').describe_regions()['Regions']]
+    ist_time = datetime.now(pytz.timezone('Asia/Kolkata')).strftime("%H:%M")
+    slack_message = f"*EC2 Automation Summary - Hour {ist_time} (Asia/Kolkata)*\n"
     total_instances = 0
+    started_instances = []
+    stopped_instances = []
 
     for region in ec2_regions:
         ec2 = boto3.client('ec2', region_name=region)
@@ -142,8 +135,10 @@ def find_and_manage_instances():
 
                     if action == "start" and state == "stopped":
                         instance_ids_to_manage.append(instance_id)
+                        started_instances.append(f"`{instance_id}` in `{region}`")
                     elif action == "stop" and state == "running":
                         instance_ids_to_manage.append(instance_id)
+                        stopped_instances.append(f"`{instance_id}` in `{region}`")
 
             if instance_ids_to_manage:
                 manage_ec2_instances(action, region, instance_ids_to_manage)
@@ -151,17 +146,19 @@ def find_and_manage_instances():
         except Exception as e:
             slack_message += f"• Region: `{region}` - Error: {str(e)}\n"
 
+    if action == "start" and started_instances:
+        slack_message += "\n✅ *Started Instances:*\n" + "\n".join(started_instances)
+    elif action == "stop" and stopped_instances:
+        slack_message += "\n🔻 *Stopped Instances:*\n" + "\n".join(stopped_instances)
+
+    slack_message += f"\n📊 *Total EC2 Instances (Running & Stopped):* `{total_instances}`"
+
     if total_instances > 0:
         send_slack_message(slack_webhook_url, slack_message)
 
-    return total_instances
-
 def lambda_handler(event, context):
-    total = find_and_manage_instances()
-    return {
-        'statusCode': 200,
-        'body': json.dumps(f'Total EC2 Instances (Running & Stopped): {total}')
-    }
+    find_and_manage_instances()
+
 ```
 
 ### 5. 🕘 Scheduling Lambda with Amazon EventBridge
@@ -209,15 +206,14 @@ Target: Your Lambda function
 Role: Use the IAM role created above
 
 
-### ✅ Example Outputs  🔔 Slack Message
-*EC2 Automation Summary - Hour 9 (Asia/Kolkata)**EC2 Automation Summary - Hour 9 (Asia/Kolkata)*
+*EC2 Automation Summary - Hour 09:00 (Asia/Kolkata)*
 
-• Region: `us-east-1` | Instance: `i-0abcd1234efgh5678` | State: `stopped` | Type: `t2.micro`
+• Region: `us-east-1` | Instance: `i-0abc123456789xyz0` | State: `stopped` | Type: `t2.micro`
 
-• Region: `us-east-1` | Instance: `i-1abcd1234efgh5679` | State: `running` | Type: `t3.large`
+• Region: `us-west-2` | Instance: `i-0def987654321xyz1` | State: `running` | Type: `t3.medium`
 
 ✅ *Started Instances:*
-`i-0abcd1234efgh5678` in `us-east-1`
+`i-0abc123456789xyz0` in `us-east-1`
 
 📊 *Total EC2 Instances (Running & Stopped):* `2`
 
