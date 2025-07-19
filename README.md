@@ -1,6 +1,3 @@
-<img width="710" height="661" alt="AWS-lambda png" src="https://github.com/user-attachments/assets/0b72fd6f-a354-45c4-ba51-7bef8417d918" />
-
-
 # 🔄 AWS Lambda - EC2 Start/Stop Automation with Slack Notification
 
 This AWS Lambda function automatically **starts or stops EC2 instances** across multiple regions based on time and sends a **detailed summary to Slack**.
@@ -8,6 +5,7 @@ This AWS Lambda function automatically **starts or stops EC2 instances** across 
 It also functions as a lightweight **EC2 inventory tool**, listing instance states and types across all regions.
 
 ---
+<img width="710" height="661" alt="AWS-lambda png" src="https://github.com/user-attachments/assets/0b72fd6f-a354-45c4-ba51-7bef8417d918" />
 
 ## 📌 Features
 
@@ -210,6 +208,7 @@ Role: Use the IAM role created above
 ### ✅ Example Outputs  🔔 Slack Message
 *EC2 Automation Summary - Hour 9 (Asia/Kolkata)**EC2 Automation Summary - Hour 9 (Asia/Kolkata)*
 • Region: `us-east-1` | Instance: `i-0abcd1234efgh5678` | State: `stopped` | Type: `t2.micro`
+
 • Region: `us-east-1` | Instance: `i-1abcd1234efgh5679` | State: `running` | Type: `t3.large`
 
 ✅ *Started Instances:*
