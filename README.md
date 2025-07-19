@@ -67,7 +67,8 @@ Attach the following IAM policy to the Lambda execution role:
 ```
 
 ###  Lambda Function Code
-```json
+
+```
 import os
 import json
 import boto3
