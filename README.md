@@ -206,7 +206,7 @@ Target: Your Lambda function
 Role: Use the IAM role created above
 
 ---
-### Outputes Be like:
+### 📌 Output's Be like:
 
 *EC2 Automation Summary - Hour 09:00 (Asia/Kolkata)*
 
