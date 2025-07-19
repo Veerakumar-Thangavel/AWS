@@ -196,9 +196,8 @@ Step 2: Create a Cron-Based Rule
 
 Go to EventBridge > Scheduler > Create schedule.
 
-Name: ec2-auto-startstop
-
-Schedule type: Cron-based
+-  Name: ec2-auto-startstop
+-  Schedule type: Cron-based
 
 Examples:
 cron(0 3 * * ? *) → triggers at 3 AM UTC daily
