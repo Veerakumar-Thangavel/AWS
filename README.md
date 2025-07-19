@@ -193,7 +193,7 @@ Permissions Policy:
   ]
 }
 ```
-
+---
 Step 2: Create a Cron-Based Rule
 
 Go to EventBridge > Scheduler > Create schedule.
@@ -229,7 +229,7 @@ Role: Use the IAM role created above
   "body": "\"Total EC2 Instances (Running & Stopped): 7\""
 }
 ```
-
+---
 
 
 ###📬 Author
