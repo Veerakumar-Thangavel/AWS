@@ -1,6 +1,6 @@
-# 🔄 EC2 Instance Scheduler with Slack Notifications
+# 🔄 EC2 Automation with Slack Notification
 
-This AWS Lambda function **automates EC2 instance start/stop** operations across all AWS regions, sends a **detailed summary to Slack**, and is **scheduled via Amazon EventBridge** based on a specified timezone.
+Automate starting and stopping EC2 instances across all AWS regions based on a defined schedule using AWS Lambda and EventBridge. Receive detailed Slack notifications for full visibility.
 
 It also functions as a lightweight **EC2 inventory tool**, listing instance states and types across all regions.
 
@@ -30,8 +30,9 @@ It also functions as a lightweight **EC2 inventory tool**, listing instance stat
 
 ### 1. Deploy the Lambda Function
 
-Create a new Lambda function using **Python 3.x** runtime.
+• Runtime: Python 3.x
 
+• Handler: lambda_function.lambda_handler
 ---
 
 ## 🛠️ Environment Variables
@@ -229,5 +230,5 @@ Role: Use the IAM role created above
 
 
 ### 📬 Author
-Veerakumar Thangavel – DevOps Engineer
-AWS | Terraform | Jenkins | Slack | EC2 Automation
+Veerakumar Thangavel
+DevOps Engineer – Cloud | Automation | Monitoring | Infrastructure 
