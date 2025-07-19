@@ -233,5 +233,5 @@ Role: Use the IAM role created above
 
 
 ### 📬 Author
-Veerakumar Thangagavel – DevOps Engineer
+Veerakumar Thangavel – DevOps Engineer
 AWS | Terraform | Jenkins | Slack | EC2 Automation
