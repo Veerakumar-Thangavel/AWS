@@ -211,6 +211,7 @@ Role: Use the IAM role created above
 
 ### ✅ Example Outputs  🔔 Slack Message
 *EC2 Automation Summary - Hour 9 (Asia/Kolkata)**EC2 Automation Summary - Hour 9 (Asia/Kolkata)*
+
 • Region: `us-east-1` | Instance: `i-0abcd1234efgh5678` | State: `stopped` | Type: `t2.micro`
 
 • Region: `us-east-1` | Instance: `i-1abcd1234efgh5679` | State: `running` | Type: `t3.large`
