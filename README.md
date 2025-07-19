@@ -199,12 +199,14 @@ Go to EventBridge > Scheduler > Create schedule.
 -  Name: ec2-auto-startstop
 -  Schedule type: Cron-based
 
-Examples:
+Ex
 cron(0 3 * * ? *) → triggers at 3 AM UTC daily
 cron(30 13 * * ? *) → triggers at 7 PM IST (13:30 UTC)
 Target: Your Lambda function
 Role: Use the IAM role created above
 
+---
+### Outputes Be like:
 
 *EC2 Automation Summary - Hour 09:00 (Asia/Kolkata)*
 
